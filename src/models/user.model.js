@@ -1,10 +1,8 @@
 import pool from '../config/db.js';
 
-/**
- * Find user by email (LOGIN)
- * Includes role + permissions
- */
-export const findUserByEmail = async (email) => {
+/* ===== OLD (RBAC – keep, not used now) ===== */
+
+export const findUserByEmailRBAC = async (email) => {
   const [rows] = await pool.query(
     `
     SELECT 
@@ -35,17 +33,46 @@ export const findUserByEmail = async (email) => {
   };
 };
 
-/**
- * Create user (REGISTER)
- * role_id required
- */
-export const createUser = async ({ name, email, password, role_id }) => {
+export const createUserRBAC = async ({ name, email, password, role_id }) => {
   const [result] = await pool.query(
     `
     INSERT INTO users (name, email, password, role_id)
     VALUES (?, ?, ?, ?)
     `,
     [name, email, password, role_id]
+  );
+
+  return result.insertId;
+};
+
+/* ===== NEW (SIMPLE – use now) ===== */
+
+export const findUserByEmail = async (email) => {
+  const [rows] = await pool.query(
+    `
+    SELECT id, name, email, password, role
+    FROM users
+    WHERE email = ?
+    LIMIT 1
+    `,
+    [email]
+  );
+
+  if (!rows[0]) return null;
+
+  return {
+    ...rows[0],
+    permissions: []
+  };
+};
+
+export const createUser = async ({ name, email, password, role }) => {
+  const [result] = await pool.query(
+    `
+    INSERT INTO users (name, email, password, role)
+    VALUES (?, ?, ?, ?)
+    `,
+    [name, email, password, role]
   );
 
   return result.insertId;

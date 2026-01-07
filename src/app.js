@@ -6,6 +6,7 @@ import brandRoutes from './routes/brand.routes.js';
 import laptopRoutes from './routes/laptop.routes.js';
 import paymentRoute from "./routes/payment.route.js";
 import mockPaymentRoute from "./routes/mockPayment.route.js";
+import orderRoutes from './routes/order.routes.js';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/brands', brandRoutes);
 app.use('/api/laptops', laptopRoutes);
 app.use("/api/payment", paymentRoute);
 app.use("/api/payment", mockPaymentRoute);
+app.use('/api/orders', orderRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'E-Top Store Backend API Running 🚀' });
