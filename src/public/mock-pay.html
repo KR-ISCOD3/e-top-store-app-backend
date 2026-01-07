@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Mock Payment Demo</h2>
+
+<button onclick="create()">Create Payment</button>
+<button onclick="confirm()">Confirm Payment</button>
+
+<p id="info"></p>
+
+<script>
+let tranId = "";
+
+async function create() {
+  const res = await fetch("/api/payment/mock/create", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ order_id: "ORDER_1", amount: 0.01 })
+  });
+  const data = await res.json();
+  tranId = data.tran_id;
+  document.getElementById("info").innerText =
+    "Transaction: " + tranId + " (PENDING)";
+}
+
+async function confirm() {
+  await fetch("/api/payment/mock/confirm", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ tran_id: tranId })
+  });
+  document.getElementById("info").innerText =
+    "Transaction: " + tranId + " (SUCCESS ✅)";
+}
+</script>
+
+</body>
+</html>

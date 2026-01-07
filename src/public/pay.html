@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ABA PayWay Sandbox Demo</title>
+</head>
+<body>
+
+<h2>ABA PayWay Sandbox QR Demo</h2>
+<button onclick="pay()">Create Payment</button>
+
+<div id="result"></div>
+
+<script>
+async function pay() {
+  const res = await fetch("/api/payment/aba/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      order_id: "ETOP" + Date.now(),
+      amount: "1.00"
+    })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert("Payment failed");
+    console.error(data);
+    return;
+  }
+
+  document.getElementById("result").innerHTML = `
+    <h3>Scan to Pay (Sandbox)</h3>
+    <img src="${data.qrImage}" width="250"/>
+    <p><b>Transaction ID:</b> ${data.tran_id}</p>
+    <p style="color:red">
+      ⚠ Sandbox QR cannot be paid using real ABA app.
+    </p>
+    <button onclick="openABA()">Open ABA App</button>
+  `;
+
+  window.openABA = () => {
+    window.location.href = data.deeplink;
+  };
+}
+</script>
+
+</body>
+</html>
