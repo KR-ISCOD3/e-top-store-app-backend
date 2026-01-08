@@ -59,7 +59,7 @@
 import bcrypt from 'bcrypt';
 import db from '../config/db.js';
 
-export default async function userSeeder() {
+export default async function   userSeeder() {
   console.log('👤 Seeding users (7 users)...');
 
   const users = [
