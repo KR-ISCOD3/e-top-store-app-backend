@@ -36,13 +36,28 @@ export const getAllLaptops = async () => {
 };
 
 // READ ONE
+// READ ONE (with brand_name)
 export const getLaptopById = async (id) => {
   const [rows] = await db.execute(
-    'SELECT * FROM laptops WHERE id = ?',
+    `
+    SELECT 
+      l.id,
+      l.name,
+      l.description,
+      l.price,
+      l.discount,
+      l.thumbnail,
+      b.name AS brand_name
+    FROM laptops l
+    LEFT JOIN brands b ON l.brand_id = b.id
+    WHERE l.id = ?
+    `,
     [id]
   );
+
   return rows[0];
 };
+
 
 // UPDATE
 export const updateLaptop = async (id, data) => {
