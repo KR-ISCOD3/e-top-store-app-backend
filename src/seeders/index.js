@@ -1,23 +1,19 @@
 import brandSeeder from './brand.seeder.js';
-import laptopSeeder from './laptop.seeder.js';
-import roleSeeder from './role.seeder.js';
 import userSeeder from './user.seeder.js';
+import laptopSeeder from './laptop.seeder.js';
+import laptopSeederCopy from './laptop.seeder_copy.js';
+import orderSeeder from './order.seeder.js';
 
 async function runSeeders() {
-  try {
-    console.log('🚀 Running seeders...');
-
-    await roleSeeder();
-    await brandSeeder(); 
-    await userSeeder(); 
-    await laptopSeeder();
-
-    console.log('🌱 All seeders executed successfully');
-    process.exit(0);
-  } catch (err) {
-    console.error('❌ Seeder failed:', err.message);
-    process.exit(1);
-  }
+  console.log('🚀 Running seeders...');
+  await brandSeeder();
+  await userSeeder();
+  // await laptopSeeder();
+  await laptopSeederCopy()
+  await orderSeeder();
+  // await laptopS();
+  console.log('🌱 All seeders executed successfully');
+  process.exit(0);
 }
 
 runSeeders();

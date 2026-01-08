@@ -13,12 +13,12 @@ export default async function brandSeeder() {
     { name: 'MSI', logo: 'https://static.cdnlogo.com/logos/m/21/msi.png' },
     { name: 'Microsoft', logo: 'https://static.vecteezy.com/system/resources/previews/027/127/473/non_2x/microsoft-logo-microsoft-icon-transparent-free-png.png' },
     { name: 'Samsung', logo: 'https://www.freepnglogos.com/uploads/original-samsung-logo-10.png' },
-    { name: 'LG', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxhQwllgzkJF844-_bi7qz6XZSF9YJ3uppIA&s' },
+    { name: 'LG', logo: 'https://logo.clearbit.com/lg.com' },
     { name: 'Razer', logo: 'https://cdn.freebiesupply.com/logos/large/2x/razer-logo-png-transparent.png' },
     { name: 'Huawei', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwv5y6NPP5Tkt1WNLAztzfyFtG0eomZwcVXw&s' },
     { name: 'Xiaomi', logo: 'https://www.freepnglogos.com/uploads/xiaomi-png/mi-logo-png-3.png' },
     { name: 'Sony', logo: 'https://www.logo.wine/a/logo/Sony_Mobile/Sony_Mobile-Logo.wine.svg' },
-    { name: 'Toshiba', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/TOSHIBA_Logo.png/1200px-TOSHIBA_Logo.png' },
+    { name: 'Toshiba', logo: 'https://upload.wikimedia.org/wikipedia/commons/d/df/TOSHIBA_Logo.png' },
   ];
 
   const conn = await db.getConnection();

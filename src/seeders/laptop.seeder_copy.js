@@ -1,29 +1,27 @@
 import db from '../config/db.js';
 
-export default async function laptopSeeder() {
-  console.log('💻 Seeding 20 laptops (full data)...');
+export default async function laptopSeederCopy() {
+  console.log('💻 Seeding laptops (full data)...');
 
   const conn = await db.getConnection();
 
   try {
     await conn.beginTransaction();
 
-    // 🔎 Get admin user (owner of laptops)
+    // get admin user
     const [[admin]] = await conn.query(
-      "SELECT id FROM users WHERE role_id = (SELECT id FROM roles WHERE name='admin') LIMIT 1"
+      "SELECT id FROM users WHERE role = 'admin' LIMIT 1"
     );
 
     if (!admin) throw new Error('Admin user not found');
 
-    // 🔎 Load brands
+    // load brands
     const [brands] = await conn.query('SELECT id, name FROM brands');
     const brandMap = {};
     brands.forEach(b => (brandMap[b.name] = b.id));
 
-    // 🧹 Clean old seeded laptops
-    await conn.query(
-      "DELETE FROM laptops WHERE thumbnail LIKE '%example.com%'"
-    );
+    // clean old laptops
+    await conn.query("DELETE FROM laptops WHERE thumbnail LIKE '%example.com%'");
 
     const laptops = [
       {
@@ -39,8 +37,7 @@ export default async function laptopSeeder() {
         description: `The MacBook Air M1 delivers excellent performance and power efficiency.
 It is designed for students, professionals, and everyday users who need a lightweight
 and reliable laptop. The fanless design ensures silent operation, while the long battery
-life allows all-day productivity without frequent charging.`,
-        status: 1,
+life allows all-day productivity without frequent charging.`
       },
       {
         brand: 'Apple',
@@ -53,9 +50,7 @@ life allows all-day productivity without frequent charging.`,
         storage: '512GB SSD',
         thumbnail: 'https://example.com/macbook-pro-m2.png',
         description: `The MacBook Pro M2 is built for professionals who require higher
-performance for development, video editing, and creative tasks. It provides fast
-processing, smooth multitasking, and a high-quality Retina display.`,
-        status: 1,
+performance for development, video editing, and creative tasks.`
       },
       {
         brand: 'Dell',
@@ -68,9 +63,7 @@ processing, smooth multitasking, and a high-quality Retina display.`,
         storage: '512GB SSD',
         thumbnail: 'https://example.com/dell-xps-13.png',
         description: `The Dell XPS 13 is a premium ultrabook with a compact design and
-powerful performance. It is perfect for office work, students, and professionals who
-need portability without compromising speed.`,
-        status: 1,
+powerful performance.`
       },
       {
         brand: 'Dell',
@@ -82,10 +75,7 @@ need portability without compromising speed.`,
         ram: '8GB',
         storage: '512GB SSD',
         thumbnail: 'https://example.com/dell-inspiron-15.png',
-        description: `The Dell Inspiron 15 is a reliable laptop designed for everyday use.
-It handles daily productivity tasks smoothly and offers a comfortable keyboard and
-large display for work and study.`,
-        status: 1,
+        description: `The Dell Inspiron 15 is a reliable laptop designed for everyday use.`
       },
       {
         brand: 'HP',
@@ -97,10 +87,7 @@ large display for work and study.`,
         ram: '8GB',
         storage: '512GB SSD',
         thumbnail: 'https://example.com/hp-pavilion-15.png',
-        description: `The HP Pavilion 15 balances performance and affordability.
-It is suitable for students, home users, and office work, offering stable performance
-and modern design.`,
-        status: 1,
+        description: `The HP Pavilion 15 balances performance and affordability.`
       },
       {
         brand: 'HP',
@@ -112,10 +99,7 @@ and modern design.`,
         ram: '16GB',
         storage: '1TB SSD',
         thumbnail: 'https://example.com/hp-spectre-x360.png',
-        description: `The HP Spectre x360 is a premium 2-in-1 laptop built for professionals
-who need flexibility and power. It supports tablet and laptop modes for creative and
-business use.`,
-        status: 1,
+        description: `The HP Spectre x360 is a premium 2-in-1 laptop.`
       },
       {
         brand: 'Lenovo',
@@ -127,9 +111,7 @@ business use.`,
         ram: '16GB',
         storage: '1TB SSD',
         thumbnail: 'https://example.com/thinkpad-x1.png',
-        description: `The ThinkPad X1 Carbon is known for durability and comfort.
-It is designed for business users who work long hours and need a reliable machine.`,
-        status: 1,
+        description: `The ThinkPad X1 Carbon is known for durability and comfort.`
       },
       {
         brand: 'Asus',
@@ -141,9 +123,7 @@ It is designed for business users who work long hours and need a reliable machin
         ram: '16GB',
         storage: '512GB SSD',
         thumbnail: 'https://example.com/asus-tuf-f15.png',
-        description: `The Asus TUF Gaming F15 delivers strong performance for gaming
-and heavy workloads. It features a durable build and stable cooling system.`,
-        status: 1,
+        description: `The Asus TUF Gaming F15 delivers strong gaming performance.`
       },
       {
         brand: 'Acer',
@@ -155,9 +135,7 @@ and heavy workloads. It features a durable build and stable cooling system.`,
         ram: '16GB',
         storage: '1TB SSD',
         thumbnail: 'https://example.com/acer-nitro-5.png',
-        description: `The Acer Nitro 5 is designed for gamers and power users who
-need strong graphics and processing performance at a reasonable price.`,
-        status: 1,
+        description: `The Acer Nitro 5 is designed for gamers and power users.`
       },
       {
         brand: 'MSI',
@@ -169,17 +147,17 @@ need strong graphics and processing performance at a reasonable price.`,
         ram: '32GB',
         storage: '1TB SSD',
         thumbnail: 'https://example.com/msi-stealth-15.png',
-        description: `The MSI Stealth 15 is a high-end gaming laptop with a slim
-design and powerful hardware for gaming and creative professionals.`,
-        status: 1,
-      },
+        description: `The MSI Stealth 15 is a high-end gaming laptop.`
+      }
     ];
 
     for (const l of laptops) {
       await conn.query(
-        `INSERT INTO laptops
-        (user_id, brand_id, name, price, discount, stock, cpu, ram, storage, thumbnail, description, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `
+        INSERT INTO laptops
+        (user_id, brand_id, name, price, discount, stock, cpu, ram, storage, thumbnail, description)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `,
         [
           admin.id,
           brandMap[l.brand],
@@ -191,8 +169,7 @@ design and powerful hardware for gaming and creative professionals.`,
           l.ram,
           l.storage,
           l.thumbnail,
-          l.description,
-          l.status,
+          l.description
         ]
       );
     }
