@@ -9,9 +9,12 @@ export default async function orderSeeder() {
     await conn.beginTransaction();
 
     const userId = 4;
+    const phone = '012999888';
+    const address = 'Street 160, Phnom Penh';
+    const note = 'Call before delivery';
     const shipping = 10;
+    const paymentMethod = 'cash';
 
-    // get some laptops
     const [laptops] = await conn.query(
       'SELECT id, price FROM laptops LIMIT 5'
     );
@@ -20,11 +23,9 @@ export default async function orderSeeder() {
       throw new Error('No laptops found');
     }
 
-    // create 5 orders
     for (let i = 0; i < 5; i++) {
       let subtotal = 0;
 
-      // pick 2 laptops per order
       const items = [
         { ...laptops[i % laptops.length], qty: 1 },
         { ...laptops[(i + 1) % laptops.length], qty: 1 }
@@ -38,10 +39,20 @@ export default async function orderSeeder() {
 
       const [orderResult] = await conn.query(
         `
-        INSERT INTO orders (user_id, subtotal, shipping, total, status)
-        VALUES (?, ?, ?, ?, 'pending')
+        INSERT INTO orders 
+        (user_id, phone, address, note, subtotal, shipping, total, payment_method, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')
         `,
-        [userId, subtotal, shipping, total]
+        [
+          userId,
+          phone,
+          address,
+          note,
+          subtotal,
+          shipping,
+          total,
+          paymentMethod
+        ]
       );
 
       const orderId = orderResult.insertId;

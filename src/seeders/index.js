@@ -10,7 +10,7 @@ async function runSeeders() {
   await userSeeder();
   // await laptopSeeder();
   await laptopSeederCopy()
-  // await orderSeeder();
+  await orderSeeder();
   // await laptopS();
   console.log('🌱 All seeders executed successfully');
   process.exit(0);

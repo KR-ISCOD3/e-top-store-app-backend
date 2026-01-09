@@ -101,3 +101,28 @@ export const deleteLaptop = async (id) => {
   );
   return result;
 };
+
+
+export const getBestSellingLaptops = async (limit = 5) => {
+  const [rows] = await db.query(
+    `
+    SELECT
+      l.id,
+      l.name,
+      l.price,
+      l.thumbnail,
+      l.brand_id,
+      b.name AS brand_name,
+      SUM(oi.quantity) AS total_sold
+    FROM order_items oi
+    JOIN laptops l ON oi.laptop_id = l.id
+    JOIN brands b ON l.brand_id = b.id
+    GROUP BY l.id, b.name
+    ORDER BY total_sold DESC
+    LIMIT ?
+    `,
+    [limit]
+  );
+
+  return rows;
+};

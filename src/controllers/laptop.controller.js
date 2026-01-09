@@ -4,6 +4,7 @@ import {
   getLaptopById,
   updateLaptop,
   deleteLaptop,
+  getBestSellingLaptops,
 } from '../models/laptop.model.js';
 
 // CREATE
@@ -56,5 +57,24 @@ export const destroyLaptop = async (req, res) => {
     res.json({ message: 'Laptop deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+export const getBestSelling = async (req, res) => {
+  try {
+    const limit = Number(req.query.limit) || 5;
+
+    const laptops = await getBestSellingLaptops(limit);
+
+    res.status(200).json({
+      success: true,
+      data: laptops,
+    });
+  } catch (error) {
+    console.error('Best selling error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch best selling laptops',
+    });
   }
 };
