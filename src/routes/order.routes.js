@@ -1,10 +1,8 @@
 import express from 'express';
+import { checkout } from '../controllers/order.controller.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
-import { storeOrder, myOrders } from '../controllers/order.controller.js';
-
 const router = express.Router();
 
-router.post('/', authenticate, storeOrder);
-router.get('/my', authenticate, myOrders);
+router.post('/checkout', authenticate, checkout);
 
 export default router;

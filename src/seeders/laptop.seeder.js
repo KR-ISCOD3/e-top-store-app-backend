@@ -8,12 +8,12 @@ export default async function laptopSeeder() {
   try {
     await conn.beginTransaction();
 
-    // 🔎 Get admin user (owner of laptops)
-    const [[admin]] = await conn.query(
-      "SELECT id FROM users WHERE role_id = (SELECT id FROM roles WHERE name='admin') LIMIT 1"
+    // 🔎 Get first user as owner
+    const [[user]] = await conn.query(
+      "SELECT id FROM users ORDER BY id ASC LIMIT 1"
     );
 
-    if (!admin) throw new Error('Admin user not found');
+    if (!user) throw new Error('No users found');
 
     // 🔎 Load brands
     const [brands] = await conn.query('SELECT id, name FROM brands');

@@ -1,32 +1,52 @@
-import { createOrder, getOrdersByUser } from '../models/order.model.js';
+import { createOrder } from '../models/order.model.js';
 
-export const storeOrder = async (req, res) => {
+export async function checkout(req, res) {
   try {
-    const userId = req.user.id;
+    const { phone, address, note, items } = req.body;
 
-    const { items } = req.body;
-
-    if (!items || items.length === 0) {
-      return res.status(400).json({ message: 'Cart is empty' });
+    // ✅ SAFE VALIDATION (VERY IMPORTANT)
+    if (!phone || !address) {
+      return res.status(400).json({
+        message: 'Phone and address are required',
+      });
     }
 
-    const orderId = await createOrder(userId, items);
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        message: 'Cart items are required',
+      });
+    }
 
-    res.status(201).json({
+    // ✅ CALCULATE TOTALS
+    const subtotal = items.reduce(
+      (sum, i) => sum + i.price * i.quantity,
+      0
+    );
+
+    const shipping = 10;
+    const total = subtotal + shipping;
+
+    // ✅ CREATE ORDER
+    const orderId = await createOrder({
+      user_id: req.user.id, // must come from auth middleware
+      phone,
+      address,
+      note: note || null,
+      subtotal,
+      shipping,
+      total,
+      payment_method: 'cash',
+    });
+
+    return res.status(201).json({
       message: 'Order created successfully',
-      order_id: orderId
+      order_id: orderId,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error('Checkout error:', err);
+    return res.status(500).json({
+      message: 'Checkout failed',
+      error: err.message,
+    });
   }
-};
-
-export const myOrders = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const orders = await getOrdersByUser(userId);
-    res.json(orders);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+}
