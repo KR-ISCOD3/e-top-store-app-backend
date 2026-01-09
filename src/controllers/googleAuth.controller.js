@@ -52,6 +52,7 @@ export async function googleLogin(req, res) {
       token,
       user: {
         id: userId,
+        name,        // ✅ ADD THIS
         email,
         role,
       },
